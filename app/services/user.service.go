@@ -26,8 +26,8 @@ func NewUserService(userRepo repository.UserRepository) UserService {
 	return &userService{userRepo: userRepo}
 }
 
-func (c *userService) CreateUser(registerRequest dto.RegisterBody) (*_user.UserResponse, error) {
-	user, err := c.userRepo.FindByUserEmail(registerRequest.Email)
+func (u *userService) CreateUser(registerRequest dto.RegisterBody) (*_user.UserResponse, error) {
+	user, err := u.userRepo.FindByUserEmail(registerRequest.Email)
 	if err == nil {
 		return nil, errors.New("user already exists")
 	}
@@ -40,14 +40,14 @@ func (c *userService) CreateUser(registerRequest dto.RegisterBody) (*_user.UserR
 		return nil, err
 	}
 
-	user, _ = c.userRepo.InsertUser(user)
+	user, _ = u.userRepo.InsertUser(user)
 
 	res := _user.NewUserResponse(user)
 	return &res, nil
 }
 
-func (t *userService) FindUserByID(userId primitive.ObjectID) (*_user.UserResponse, error) {
-	user, err := t.userRepo.FindByUserID(userId)
+func (u *userService) FindUserByID(userId primitive.ObjectID) (*_user.UserResponse, error) {
+	user, err := u.userRepo.FindByUserID(userId)
 	if err != nil {
 		return nil, err
 	}
@@ -60,8 +60,8 @@ func (t *userService) FindUserByID(userId primitive.ObjectID) (*_user.UserRespon
 	return &userResponse, nil
 }
 
-func (t *userService) FindUserByEmail(email string) (*_user.UserResponse, error) {
-	user, err := t.userRepo.FindByUserEmail(email)
+func (u *userService) FindUserByEmail(email string) (*_user.UserResponse, error) {
+	user, err := u.userRepo.FindByUserEmail(email)
 	if err != nil {
 		return nil, err
 	}

@@ -22,6 +22,7 @@ type jwtCustomClaim struct {
 
 type JWTService interface {
 	GenerateToken(userID *primitive.ObjectID) string
+	ValidateToken(token string, ctx *fiber.Ctx) *jwt.Token
 }
 
 func NewJWTService() JWTService {

@@ -14,9 +14,10 @@ func main() {
 	server := fiber.New()
 
 	dbClientUsers := configs.GetCollection(configs.DB, "users")
+	dbClientMailTemplates := configs.GetCollection(configs.DB, "mail_templates")
 
 	UserRepository := repository.NewUserRepository(dbClientUsers)
-	_ = UserRepository
+	MailTemplateRepository := repository.NewMailTemplateRepository(dbClientMailTemplates)
 
 	//auth
 	var authService services.AuthService = services.NewAuthService(UserRepository)
@@ -25,8 +26,15 @@ func main() {
 	authHandler := handlers.NewAuthHandler(authService, jwtService, userService)
 
 	authRoutes := server.Group("/api/auth")
-	authRoutes.Post("/login", middlewares.AuthMiddleware(&dto.LoginBody{}), authHandler.Login)
-	authRoutes.Post("/register", middlewares.AuthMiddleware(&dto.RegisterBody{}), authHandler.Register)
+	authRoutes.Post("/login", middlewares.AuthValidation(&dto.LoginBody{}), authHandler.Login)
+	authRoutes.Post("/register", middlewares.AuthValidation(&dto.RegisterBody{}), authHandler.Register)
+
+	//mail template
+	var mailTemplateService services.MailTemplateService = services.NewMailTemplateService(MailTemplateRepository)
+	mailTemplateHandler := handlers.NewMailTemplateHandler(mailTemplateService, userService, jwtService)
+
+	mailTemplateRoutes := server.Group("/api/mailtemp")
+	mailTemplateRoutes.Post("/", middlewares.AuthorizeJWT(jwtService), middlewares.MailTemplateValidation(&dto.MailTemplateBody{}), mailTemplateHandler.CreateMailTemplate)
 
 	server.Listen(":3000")
 }
