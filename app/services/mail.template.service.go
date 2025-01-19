@@ -12,6 +12,7 @@ import (
 
 type MailTemplateService interface {
 	CreateMailTemplate(mailTemplateRequest dto.MailTemplateBody) (*_mailTemplate.MailTemplateResponse, error)
+	UpdateMailTemplate(UpdateMailTemplateRequest dto.UpdateMailTemplateBody) (*_mailTemplate.MailTemplateResponse, error)
 	FindMailTemplateByID(mailTemplateId primitive.ObjectID) (*_mailTemplate.MailTemplateResponse, error)
 }
 
@@ -31,6 +32,22 @@ func (mt *mailTemplateService) CreateMailTemplate(mailTemplateRequest dto.MailTe
 		return nil, err
 	}
 	mailTemplate, _ = mt.mailTemplateRepo.InsertMailTemplate(mailTemplate)
+
+	res := _mailTemplate.NewMailTemplateResponse(mailTemplate)
+	return &res, nil
+}
+
+func (mt *mailTemplateService) UpdateMailTemplate(mailTemplateRequest dto.UpdateMailTemplateBody) (*_mailTemplate.MailTemplateResponse, error) {
+	var mailTemplate models.MailTemplate
+	err := smapping.FillStruct(&mailTemplate, smapping.MapFields(&mailTemplateRequest))
+	if err != nil {
+		return nil, err
+	}
+
+	mailTemplate, err = mt.mailTemplateRepo.UpdateMailTemplate(mailTemplate)
+	if err != nil {
+		return nil, err
+	}
 
 	res := _mailTemplate.NewMailTemplateResponse(mailTemplate)
 	return &res, nil

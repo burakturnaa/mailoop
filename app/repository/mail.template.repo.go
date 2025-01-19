@@ -8,6 +8,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type mailTemplateRepository struct {
@@ -16,6 +17,7 @@ type mailTemplateRepository struct {
 
 type MailTemplateRepository interface {
 	InsertMailTemplate(mailTemplate models.MailTemplate) (models.MailTemplate, error)
+	UpdateMailTemplate(mailTemplate models.MailTemplate) (models.MailTemplate, error)
 	FindByMailTemplateID(mailTemplateId primitive.ObjectID) (models.MailTemplate, error)
 }
 
@@ -33,6 +35,19 @@ func (mt *mailTemplateRepository) InsertMailTemplate(mailTemplate models.MailTem
 		return mailTemplate, err
 	}
 
+	return mailTemplate, nil
+}
+
+func (mt *mailTemplateRepository) UpdateMailTemplate(mailTemplate models.MailTemplate) (models.MailTemplate, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	opts := options.Update().SetUpsert(true)
+	filter := bson.D{{"id", mailTemplate.Id}}
+	update := bson.D{{"$set", bson.D{{"title", mailTemplate.Title}, {"subject", mailTemplate.Subject}, {"content", mailTemplate.Content}, {"updated_at", time.Now()}}}}
+	_, err := mt.MailTemplateCollection.UpdateOne(ctx, filter, update, opts)
+	if err != nil {
+		return mailTemplate, err
+	}
 	return mailTemplate, nil
 }
 

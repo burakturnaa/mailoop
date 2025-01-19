@@ -26,9 +26,8 @@ func AuthorizeJWT(jwtService services.JWTService) fiber.Handler {
 		}
 		if token.Valid {
 			claims := token.Claims.(jwt.MapClaims)
-			log.Println("Claim[user_id]: ", claims["user_id"])
-			log.Println("Claim[issuer] :", claims["iss"])
-			ctx.Locals("userIdClaims", claims["user_id"])
+			log.Println("Claims :", claims["iss"], claims["user_id"])
+			ctx.Locals("userIdClaim", claims["user_id"])
 		} else {
 			response := utils.BuildResponse(4011, "Unauthorized", nil, nil)
 			return ctx.Status(http.StatusUnauthorized).JSON(response)
