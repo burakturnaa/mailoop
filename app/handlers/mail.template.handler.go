@@ -53,7 +53,7 @@ func (h *mailTemplateHandler) GetAll(ctx *fiber.Ctx) error {
 func (h *mailTemplateHandler) GetOne(ctx *fiber.Ctx) error {
 	id, err := primitive.ObjectIDFromHex(ctx.Params("id"))
 	if err != nil {
-		response := utils.BuildResponse(4002, "Invalid id", nil, nil)
+		response := utils.BuildResponse(4002, "Validation error", fiber.Map{"id": "id must be a valid primitive object id"}, nil)
 		return ctx.Status(http.StatusBadRequest).JSON(response)
 	}
 	mailTemplates, err := h.mailTemplateService.GetOne(id)
@@ -109,7 +109,6 @@ func (h *mailTemplateHandler) UpdateMailTemplate(ctx *fiber.Ctx) error {
 		response := utils.BuildResponse(4041, "user not found", nil, nil)
 		return ctx.Status(http.StatusUnauthorized).JSON(response)
 	}
-
 	// parse the request body
 	var updateMailTemplateRequest dto.UpdateMailTemplateBody
 	err := ctx.BodyParser(&updateMailTemplateRequest)
@@ -118,16 +117,23 @@ func (h *mailTemplateHandler) UpdateMailTemplate(ctx *fiber.Ctx) error {
 		return ctx.Status(http.StatusBadRequest).JSON(response)
 	}
 
+	mailTemplateId, err := primitive.ObjectIDFromHex(ctx.Params("id"))
+	if err != nil {
+		response := utils.BuildResponse(4002, "Validation error", fiber.Map{"id": "id must be a valid primitive object id"}, nil)
+		return ctx.Status(http.StatusBadRequest).JSON(response)
+
+	}
+
 	// find mail template by id
-	findMailTemplate, _ := h.mailTemplateService.FindMailTemplateByID(updateMailTemplateRequest.Id)
+	findMailTemplate, _ := h.mailTemplateService.FindMailTemplateByID(mailTemplateId)
 	if findMailTemplate == nil {
 		response := utils.BuildResponse(4042, "mail template not found", nil, nil)
 		return ctx.Status(http.StatusUnauthorized).JSON(response)
 	}
-	var mailTemplateId *primitive.ObjectID = findMailTemplate.Id
 	// clean html and string content via SanitizeHTML()
 	updateMailTemplateRequest.Content = utils.SanitizeHTML(updateMailTemplateRequest.Content)
 
+	updateMailTemplateRequest.Id = mailTemplateId
 	// update
 	mailTemplate, err := h.mailTemplateService.UpdateMailTemplate(updateMailTemplateRequest)
 	mailTemplate.Id = nil
@@ -144,7 +150,7 @@ func (h *mailTemplateHandler) UpdateMailTemplate(ctx *fiber.Ctx) error {
 func (h *mailTemplateHandler) DeleteMailTemplate(ctx *fiber.Ctx) error {
 	id, err := primitive.ObjectIDFromHex(ctx.Params("id"))
 	if err != nil {
-		response := utils.BuildResponse(4002, "Invalid id", nil, nil)
+		response := utils.BuildResponse(4002, "Validation error", fiber.Map{"id": "id must be a valid primitive object id"}, nil)
 		return ctx.Status(http.StatusBadRequest).JSON(response)
 	}
 	result, err := h.mailTemplateService.DeleteMailTemplate(id)

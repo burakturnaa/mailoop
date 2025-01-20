@@ -1,22 +1,18 @@
 package utils
 
 import (
-	"reflect"
-	"strings"
+	"regexp"
 
 	"github.com/go-playground/validator/v10"
 )
 
-func TrimValidator(fl validator.FieldLevel) bool {
-	if fl.Field().Kind() == reflect.String {
-		trimmed := strings.TrimSpace(fl.Field().String())
+func PhoneValidator(fl validator.FieldLevel) bool {
+	phone := fl.Field().String()
 
-		field := fl.Field()
-		if field.CanSet() {
-			field.SetString(trimmed)
-		}
+	// e.g., +90 555 555 55 55 (Turkey format)
+	phoneRegex := `^\+90 \d{3} \d{3} \d{2} \d{2}$`
 
-		return true
-	}
-	return false
+	// Match the phone number against the regex
+	match, _ := regexp.MatchString(phoneRegex, phone)
+	return match
 }

@@ -20,7 +20,6 @@ func MailTemplateValidation(dtoType interface{}) fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
 
 		// register custom validations
-		validate.RegisterValidation("trim", utils.TrimValidator)
 
 		// rebuild DTO for every request
 		dto := reflect.New(reflect.TypeOf(dtoType).Elem()).Interface()

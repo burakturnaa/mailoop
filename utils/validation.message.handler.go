@@ -14,6 +14,10 @@ func ValidationMessageHandler(e validator.FieldError) string {
 		return fmt.Sprintf("%s is required", e.Field())
 	case "email":
 		return fmt.Sprintf("%s must be a valid email", e.Field())
+	case "phone":
+		return fmt.Sprintf("%s must be a valid phone number e.g.:+90 555 555 55 55", e.Field())
+	case "url":
+		return fmt.Sprintf("%s must be a valid url e.g.:https://bilisimguru.com", e.Field())
 	case "min":
 		return fmt.Sprintf("%s must be at least %s characters", e.Field(), e.Param())
 	default:

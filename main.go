@@ -16,20 +16,24 @@ func main() {
 	// collections
 	dbClientUsers := configs.GetCollection(configs.DB, "users")
 	dbClientMailTemplates := configs.GetCollection(configs.DB, "mail_templates")
+	dbClientCompanies := configs.GetCollection(configs.DB, "companies")
 
 	// repositories
 	UserRepository := repository.NewUserRepository(dbClientUsers)
 	MailTemplateRepository := repository.NewMailTemplateRepository(dbClientMailTemplates)
+	CompanyRepository := repository.NewCompanyRepository(dbClientCompanies)
 
 	// services
 	var authService services.AuthService = services.NewAuthService(UserRepository)
 	var jwtService services.JWTService = services.NewJWTService()
 	var userService services.UserService = services.NewUserService(UserRepository)
 	var mailTemplateService services.MailTemplateService = services.NewMailTemplateService(MailTemplateRepository)
+	var companyService services.CompanyService = services.NewCompanyService(CompanyRepository)
 
 	// handlers
 	authHandler := handlers.NewAuthHandler(authService, jwtService, userService)
 	mailTemplateHandler := handlers.NewMailTemplateHandler(mailTemplateService, userService, jwtService)
+	companyHandler := handlers.NewCompanyHandler(companyService, userService, jwtService)
 
 	// auth routes
 	authRoutes := server.Group("/api/auth")
@@ -43,6 +47,14 @@ func main() {
 	mailTemplateRoutes.Post("/", middlewares.AuthorizeJWT(jwtService), middlewares.MailTemplateValidation(&dto.MailTemplateBody{}), mailTemplateHandler.CreateMailTemplate)
 	mailTemplateRoutes.Put("/:id", middlewares.AuthorizeJWT(jwtService), middlewares.MailTemplateValidation(&dto.UpdateMailTemplateBody{}), mailTemplateHandler.UpdateMailTemplate)
 	mailTemplateRoutes.Delete("/:id", middlewares.AuthorizeJWT(jwtService), mailTemplateHandler.DeleteMailTemplate)
+
+	// company routes
+	companyRoutes := server.Group("/api/company")
+	companyRoutes.Get("/", middlewares.AuthorizeJWT(jwtService), companyHandler.GetAll)
+	companyRoutes.Get("/:id", middlewares.AuthorizeJWT(jwtService), companyHandler.GetOne)
+	companyRoutes.Post("/", middlewares.AuthorizeJWT(jwtService), middlewares.CompanyValidation(&dto.CompanyBody{}), companyHandler.CreateCompany)
+	companyRoutes.Put("/:id", middlewares.AuthorizeJWT(jwtService), middlewares.CompanyValidation(&dto.UpdateCompanyBody{}), companyHandler.UpdateCompany)
+	companyRoutes.Delete("/:id", middlewares.AuthorizeJWT(jwtService), companyHandler.DeleteCompany)
 
 	server.Listen(":3000")
 }
