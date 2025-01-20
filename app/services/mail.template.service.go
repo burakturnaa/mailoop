@@ -15,6 +15,7 @@ type MailTemplateService interface {
 	GetOne(id primitive.ObjectID) (*_mailTemplate.MailTemplateResponse, error)
 	CreateMailTemplate(mailTemplateRequest dto.MailTemplateBody) (*_mailTemplate.MailTemplateResponse, error)
 	UpdateMailTemplate(UpdateMailTemplateRequest dto.UpdateMailTemplateBody) (*_mailTemplate.MailTemplateResponse, error)
+	DeleteMailTemplate(id primitive.ObjectID) (bool, error)
 	FindMailTemplateByID(mailTemplateId primitive.ObjectID) (*_mailTemplate.MailTemplateResponse, error)
 }
 
@@ -87,4 +88,12 @@ func (mt *mailTemplateService) FindMailTemplateByID(mailTemplateId primitive.Obj
 		return nil, err
 	}
 	return &mailTemplateResponse, nil
+}
+
+func (mt *mailTemplateService) DeleteMailTemplate(id primitive.ObjectID) (bool, error) {
+	result, err := mt.mailTemplateRepo.DeleteMailTemplate(id)
+	if err != nil {
+		return result, err
+	}
+	return result, nil
 }

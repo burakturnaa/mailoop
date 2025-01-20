@@ -21,6 +21,7 @@ type MailTemplateRepository interface {
 	GetOne(id primitive.ObjectID) (models.MailTemplate, error)
 	InsertMailTemplate(mailTemplate models.MailTemplate) (models.MailTemplate, error)
 	UpdateMailTemplate(mailTemplate models.MailTemplate) (models.MailTemplate, error)
+	DeleteMailTemplate(id primitive.ObjectID) (bool, error)
 	FindByMailTemplateID(mailTemplateId primitive.ObjectID) (models.MailTemplate, error)
 }
 
@@ -79,6 +80,16 @@ func (mt *mailTemplateRepository) UpdateMailTemplate(mailTemplate models.MailTem
 		return mailTemplate, err
 	}
 	return mailTemplate, nil
+}
+
+func (mt *mailTemplateRepository) DeleteMailTemplate(id primitive.ObjectID) (bool, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	result, err := mt.MailTemplateCollection.DeleteOne(ctx, bson.M{"id": id})
+	if err != nil || result.DeletedCount < 1 {
+		return false, err
+	}
+	return true, nil
 }
 
 func (mt *mailTemplateRepository) FindByMailTemplateID(mailTemplateId primitive.ObjectID) (models.MailTemplate, error) {

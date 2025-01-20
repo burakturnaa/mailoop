@@ -17,6 +17,7 @@ type MailTemplateHandler interface {
 	GetOne(ctx *fiber.Ctx) error
 	CreateMailTemplate(ctx *fiber.Ctx) error
 	UpdateMailTemplate(ctx *fiber.Ctx) error
+	DeleteMailTemplate(ctx *fiber.Ctx) error
 }
 
 type mailTemplateHandler struct {
@@ -52,7 +53,7 @@ func (h *mailTemplateHandler) GetAll(ctx *fiber.Ctx) error {
 func (h *mailTemplateHandler) GetOne(ctx *fiber.Ctx) error {
 	id, err := primitive.ObjectIDFromHex(ctx.Params("id"))
 	if err != nil {
-		response := utils.BuildResponse(4001, "Invalid id", nil, nil)
+		response := utils.BuildResponse(4002, "Invalid id", nil, nil)
 		return ctx.Status(http.StatusBadRequest).JSON(response)
 	}
 	mailTemplates, err := h.mailTemplateService.GetOne(id)
@@ -137,5 +138,25 @@ func (h *mailTemplateHandler) UpdateMailTemplate(ctx *fiber.Ctx) error {
 
 	log.Println("Mail template is updated:", mailTemplateId.Hex(), "by", userId.Hex())
 	response := utils.BuildResponse(2001, "success", nil, mailTemplate)
+	return ctx.Status(http.StatusOK).JSON(response)
+}
+
+func (h *mailTemplateHandler) DeleteMailTemplate(ctx *fiber.Ctx) error {
+	id, err := primitive.ObjectIDFromHex(ctx.Params("id"))
+	if err != nil {
+		response := utils.BuildResponse(4002, "Invalid id", nil, nil)
+		return ctx.Status(http.StatusBadRequest).JSON(response)
+	}
+	result, err := h.mailTemplateService.DeleteMailTemplate(id)
+	if err != nil || !result {
+		if err != nil && err.Error() != mongo.ErrNoDocuments.Error() {
+			response := utils.BuildResponse(5001, "database error", nil, nil)
+			return ctx.Status(http.StatusInternalServerError).JSON(response)
+		} else {
+			response := utils.BuildResponse(4041, "mail template not found", nil, nil)
+			return ctx.Status(http.StatusNotFound).JSON(response)
+		}
+	}
+	response := utils.BuildResponse(2001, "success", nil, nil)
 	return ctx.Status(http.StatusOK).JSON(response)
 }
