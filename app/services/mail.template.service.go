@@ -11,6 +11,7 @@ import (
 )
 
 type MailTemplateService interface {
+	GetAll() (*[]_mailTemplate.MailTemplateResponse, error)
 	CreateMailTemplate(mailTemplateRequest dto.MailTemplateBody) (*_mailTemplate.MailTemplateResponse, error)
 	UpdateMailTemplate(UpdateMailTemplateRequest dto.UpdateMailTemplateBody) (*_mailTemplate.MailTemplateResponse, error)
 	FindMailTemplateByID(mailTemplateId primitive.ObjectID) (*_mailTemplate.MailTemplateResponse, error)
@@ -22,6 +23,16 @@ type mailTemplateService struct {
 
 func NewMailTemplateService(mailTemplateRepo repository.MailTemplateRepository) MailTemplateService {
 	return &mailTemplateService{mailTemplateRepo: mailTemplateRepo}
+}
+
+func (mt *mailTemplateService) GetAll() (*[]_mailTemplate.MailTemplateResponse, error) {
+	mailTemplates, err := mt.mailTemplateRepo.GetAll()
+	if err != nil {
+		return nil, err
+	}
+
+	response := _mailTemplate.NewMailTemplateArrayResponse(mailTemplates)
+	return &response, nil
 }
 
 func (mt *mailTemplateService) CreateMailTemplate(mailTemplateRequest dto.MailTemplateBody) (*_mailTemplate.MailTemplateResponse, error) {

@@ -1,6 +1,8 @@
 package utils
 
-import "reflect"
+import (
+	"reflect"
+)
 
 type Response struct {
 	Code    int         `json:"code"`
@@ -12,8 +14,14 @@ type Response struct {
 func BuildResponse(code int, message string, errors interface{}, payload interface{}) Response {
 	if payload == nil {
 		payload = make([]interface{}, 0)
-	} else if reflect.TypeOf(payload).Kind() != reflect.Slice {
-		payload = []interface{}{payload}
+	} else {
+		v := reflect.ValueOf(payload)
+		if v.Kind() == reflect.Ptr {
+			v = v.Elem()
+		}
+		if v.Kind() != reflect.Slice {
+			payload = []interface{}{payload}
+		}
 	}
 
 	if errors == nil {

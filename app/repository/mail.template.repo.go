@@ -16,6 +16,7 @@ type mailTemplateRepository struct {
 }
 
 type MailTemplateRepository interface {
+	GetAll() ([]models.MailTemplate, error)
 	InsertMailTemplate(mailTemplate models.MailTemplate) (models.MailTemplate, error)
 	UpdateMailTemplate(mailTemplate models.MailTemplate) (models.MailTemplate, error)
 	FindByMailTemplateID(mailTemplateId primitive.ObjectID) (models.MailTemplate, error)
@@ -23,6 +24,21 @@ type MailTemplateRepository interface {
 
 func NewMailTemplateRepository(dbClient *mongo.Collection) MailTemplateRepository {
 	return &mailTemplateRepository{MailTemplateCollection: dbClient}
+}
+
+func (mt *mailTemplateRepository) GetAll() ([]models.MailTemplate, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	var mailTemplates []models.MailTemplate
+	cursor, err := mt.MailTemplateCollection.Find(ctx, bson.M{})
+	if err != nil {
+		return nil, err
+	}
+
+	if err := cursor.All(ctx, &mailTemplates); err != nil {
+		return nil, err
+	}
+	return mailTemplates, nil
 }
 
 func (mt *mailTemplateRepository) InsertMailTemplate(mailTemplate models.MailTemplate) (models.MailTemplate, error) {

@@ -36,8 +36,9 @@ func main() {
 	mailTemplateRoutes := server.Group("/api/mailtemp")
 	mailTemplateRoutes.Post("/", middlewares.AuthorizeJWT(jwtService), middlewares.MailTemplateValidation(&dto.MailTemplateBody{}), mailTemplateHandler.CreateMailTemplate)
 	mailTemplateRoutes.Put("/:id", middlewares.AuthorizeJWT(jwtService), middlewares.MailTemplateValidation(&dto.UpdateMailTemplateBody{}), mailTemplateHandler.UpdateMailTemplate)
-	// mailTemplateRoutes.Get("/", middlewares.AuthMiddleware(&dto.RegisterBody{}), authHandler.Register)
+	mailTemplateRoutes.Get("/", middlewares.AuthorizeJWT(jwtService), mailTemplateHandler.GetAll)
 	// mailTemplateRoutes.Get("/:id", middlewares.AuthMiddleware(&dto.RegisterBody{}), authHandler.Register)
+	// mailTemplateRoutes.Delete("/:id", middlewares.AuthMiddleware(&dto.RegisterBody{}), authHandler.Register)
 
 	server.Listen(":3000")
 }

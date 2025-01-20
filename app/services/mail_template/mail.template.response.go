@@ -21,3 +21,17 @@ func NewMailTemplateResponse(mailTemplate models.MailTemplate) MailTemplateRespo
 		Content: mailTemplate.Content,
 	}
 }
+
+func NewMailTemplateArrayResponse(mailTemplates []models.MailTemplate) []MailTemplateResponse {
+	mailTemplateRes := []MailTemplateResponse{}
+	for _, v := range mailTemplates {
+		p := MailTemplateResponse{
+			Id:      &v.Id,
+			Title:   v.Title,
+			Subject: v.Subject,
+			Content: v.Content,
+		}
+		mailTemplateRes = append(mailTemplateRes, p)
+	}
+	return mailTemplateRes
+}

@@ -12,6 +12,7 @@ import (
 )
 
 type MailTemplateHandler interface {
+	GetAll(ctx *fiber.Ctx) error
 	CreateMailTemplate(ctx *fiber.Ctx) error
 	UpdateMailTemplate(ctx *fiber.Ctx) error
 }
@@ -32,6 +33,16 @@ func NewMailTemplateHandler(
 		userService:         userService,
 		jwtService:          jwtService,
 	}
+}
+
+func (h *mailTemplateHandler) GetAll(ctx *fiber.Ctx) error {
+	mailTemplates, err := h.mailTemplateService.GetAll()
+	if err != nil {
+		response := utils.BuildResponse(5001, "database error", nil, nil)
+		return ctx.Status(http.StatusInternalServerError).JSON(response)
+	}
+	response := utils.BuildResponse(2001, "success", nil, mailTemplates)
+	return ctx.Status(http.StatusOK).JSON(response)
 }
 
 func (h *mailTemplateHandler) CreateMailTemplate(ctx *fiber.Ctx) error {
