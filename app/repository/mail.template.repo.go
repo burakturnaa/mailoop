@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/burakturnaa/mailoop.git/app/models"
@@ -17,6 +18,7 @@ type mailTemplateRepository struct {
 
 type MailTemplateRepository interface {
 	GetAll() ([]models.MailTemplate, error)
+	GetOne(id primitive.ObjectID) (models.MailTemplate, error)
 	InsertMailTemplate(mailTemplate models.MailTemplate) (models.MailTemplate, error)
 	UpdateMailTemplate(mailTemplate models.MailTemplate) (models.MailTemplate, error)
 	FindByMailTemplateID(mailTemplateId primitive.ObjectID) (models.MailTemplate, error)
@@ -37,6 +39,18 @@ func (mt *mailTemplateRepository) GetAll() ([]models.MailTemplate, error) {
 
 	if err := cursor.All(ctx, &mailTemplates); err != nil {
 		return nil, err
+	}
+	return mailTemplates, nil
+}
+
+func (mt *mailTemplateRepository) GetOne(id primitive.ObjectID) (models.MailTemplate, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	var mailTemplates models.MailTemplate
+	err := mt.MailTemplateCollection.FindOne(ctx, bson.M{"id": id}).Decode(&mailTemplates)
+	fmt.Println(err)
+	if err != nil {
+		return mailTemplates, err
 	}
 	return mailTemplates, nil
 }

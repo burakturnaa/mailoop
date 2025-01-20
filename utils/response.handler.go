@@ -12,7 +12,7 @@ type Response struct {
 }
 
 func BuildResponse(code int, message string, errors interface{}, payload interface{}) Response {
-	if payload == nil {
+	if payload == nil || reflect.ValueOf(payload).IsNil() {
 		payload = make([]interface{}, 0)
 	} else {
 		v := reflect.ValueOf(payload)

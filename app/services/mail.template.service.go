@@ -12,6 +12,7 @@ import (
 
 type MailTemplateService interface {
 	GetAll() (*[]_mailTemplate.MailTemplateResponse, error)
+	GetOne(id primitive.ObjectID) (*_mailTemplate.MailTemplateResponse, error)
 	CreateMailTemplate(mailTemplateRequest dto.MailTemplateBody) (*_mailTemplate.MailTemplateResponse, error)
 	UpdateMailTemplate(UpdateMailTemplateRequest dto.UpdateMailTemplateBody) (*_mailTemplate.MailTemplateResponse, error)
 	FindMailTemplateByID(mailTemplateId primitive.ObjectID) (*_mailTemplate.MailTemplateResponse, error)
@@ -32,6 +33,16 @@ func (mt *mailTemplateService) GetAll() (*[]_mailTemplate.MailTemplateResponse, 
 	}
 
 	response := _mailTemplate.NewMailTemplateArrayResponse(mailTemplates)
+	return &response, nil
+}
+
+func (mt *mailTemplateService) GetOne(id primitive.ObjectID) (*_mailTemplate.MailTemplateResponse, error) {
+	mailTemplates, err := mt.mailTemplateRepo.GetOne(id)
+	if err != nil {
+		return nil, err
+	}
+
+	response := _mailTemplate.NewMailTemplateResponse(mailTemplates)
 	return &response, nil
 }
 

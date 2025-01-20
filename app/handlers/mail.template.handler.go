@@ -9,10 +9,12 @@ import (
 	"github.com/burakturnaa/mailoop.git/utils"
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type MailTemplateHandler interface {
 	GetAll(ctx *fiber.Ctx) error
+	GetOne(ctx *fiber.Ctx) error
 	CreateMailTemplate(ctx *fiber.Ctx) error
 	UpdateMailTemplate(ctx *fiber.Ctx) error
 }
@@ -38,8 +40,30 @@ func NewMailTemplateHandler(
 func (h *mailTemplateHandler) GetAll(ctx *fiber.Ctx) error {
 	mailTemplates, err := h.mailTemplateService.GetAll()
 	if err != nil {
-		response := utils.BuildResponse(5001, "database error", nil, nil)
-		return ctx.Status(http.StatusInternalServerError).JSON(response)
+		if err.Error() != mongo.ErrNoDocuments.Error() {
+			response := utils.BuildResponse(5001, "database error", nil, nil)
+			return ctx.Status(http.StatusInternalServerError).JSON(response)
+		}
+	}
+	response := utils.BuildResponse(2001, "success", nil, mailTemplates)
+	return ctx.Status(http.StatusOK).JSON(response)
+}
+
+func (h *mailTemplateHandler) GetOne(ctx *fiber.Ctx) error {
+	id, err := primitive.ObjectIDFromHex(ctx.Params("id"))
+	if err != nil {
+		response := utils.BuildResponse(4001, "Invalid id", nil, nil)
+		return ctx.Status(http.StatusBadRequest).JSON(response)
+	}
+	mailTemplates, err := h.mailTemplateService.GetOne(id)
+	if err != nil {
+		if err.Error() != mongo.ErrNoDocuments.Error() {
+			response := utils.BuildResponse(5001, "database error", nil, nil)
+			return ctx.Status(http.StatusInternalServerError).JSON(response)
+		} else {
+			response := utils.BuildResponse(4041, "mail template not found", nil, nil)
+			return ctx.Status(http.StatusNotFound).JSON(response)
+		}
 	}
 	response := utils.BuildResponse(2001, "success", nil, mailTemplates)
 	return ctx.Status(http.StatusOK).JSON(response)
