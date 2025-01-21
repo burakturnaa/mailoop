@@ -23,6 +23,7 @@ type CompanyRepository interface {
 	UpdateCompany(company models.Company) (models.Company, error)
 	DeleteCompany(id primitive.ObjectID) (bool, error)
 	FindByCompanyID(companyId primitive.ObjectID) (models.Company, error)
+	FindByCompanyEmail(companyEmail string) (models.Company, error)
 }
 
 func NewCompanyRepository(dbClient *mongo.Collection) CompanyRepository {
@@ -97,6 +98,17 @@ func (mt *companyRepository) FindByCompanyID(companyId primitive.ObjectID) (mode
 	defer cancel()
 	var company models.Company
 	err := mt.CompanyCollection.FindOne(ctx, bson.M{"id": companyId}).Decode(&company)
+	if err != nil {
+		return company, err
+	}
+	return company, nil
+}
+
+func (mt *companyRepository) FindByCompanyEmail(companyEmail string) (models.Company, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	var company models.Company
+	err := mt.CompanyCollection.FindOne(ctx, bson.M{"email": companyEmail}).Decode(&company)
 	if err != nil {
 		return company, err
 	}

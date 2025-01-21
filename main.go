@@ -17,11 +17,13 @@ func main() {
 	dbClientUsers := configs.GetCollection(configs.DB, "users")
 	dbClientMailTemplates := configs.GetCollection(configs.DB, "mail_templates")
 	dbClientCompanies := configs.GetCollection(configs.DB, "companies")
+	dbClientLogs := configs.GetCollection(configs.DB, "logs")
 
 	// repositories
 	UserRepository := repository.NewUserRepository(dbClientUsers)
 	MailTemplateRepository := repository.NewMailTemplateRepository(dbClientMailTemplates)
 	CompanyRepository := repository.NewCompanyRepository(dbClientCompanies)
+	LogRepository := repository.NewLogRepository(dbClientLogs)
 
 	// services
 	var authService services.AuthService = services.NewAuthService(UserRepository)
@@ -29,11 +31,14 @@ func main() {
 	var userService services.UserService = services.NewUserService(UserRepository)
 	var mailTemplateService services.MailTemplateService = services.NewMailTemplateService(MailTemplateRepository)
 	var companyService services.CompanyService = services.NewCompanyService(CompanyRepository)
+	var logService services.LogService = services.NewLogService(LogRepository)
 
 	// handlers
 	authHandler := handlers.NewAuthHandler(authService, jwtService, userService)
 	mailTemplateHandler := handlers.NewMailTemplateHandler(mailTemplateService, userService, jwtService)
 	companyHandler := handlers.NewCompanyHandler(companyService, userService, jwtService)
+	mailSenderHandler := handlers.NewMailSenderHandler(logService, mailTemplateService, companyService, userService, jwtService)
+	logHandler := handlers.NewLogHandler(logService, userService, jwtService)
 
 	// auth routes
 	authRoutes := server.Group("/api/auth")
@@ -55,6 +60,14 @@ func main() {
 	companyRoutes.Post("/", middlewares.AuthorizeJWT(jwtService), middlewares.CompanyValidation(&dto.CompanyBody{}), companyHandler.CreateCompany)
 	companyRoutes.Put("/:id", middlewares.AuthorizeJWT(jwtService), middlewares.CompanyValidation(&dto.UpdateCompanyBody{}), companyHandler.UpdateCompany)
 	companyRoutes.Delete("/:id", middlewares.AuthorizeJWT(jwtService), companyHandler.DeleteCompany)
+
+	// mail sender route
+	mailSenderRoutes := server.Group("/api/mail")
+	mailSenderRoutes.Post("/send", middlewares.AuthorizeJWT(jwtService), middlewares.MailSenderValidation(&dto.MailSenderBody{}), mailSenderHandler.CreateLog)
+
+	// log route
+	LogRoutes := server.Group("/api/log")
+	LogRoutes.Get("/", middlewares.AuthorizeJWT(jwtService), logHandler.GetAll)
 
 	server.Listen(":3000")
 }

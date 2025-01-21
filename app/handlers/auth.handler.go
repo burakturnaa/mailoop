@@ -64,14 +64,17 @@ func (h *authHandler) Register(ctx *fiber.Ctx) error {
 		return ctx.Status(http.StatusBadRequest).JSON(response)
 	}
 
-	user, err := h.userService.CreateUser(registerRequest)
-	if err != nil { // user already exists
-		response := utils.BuildResponse(4041, "user already exists", nil, nil)
+	findUser, _ := h.userService.FindUserByEmail(registerRequest.Email)
+	if findUser != nil {
+		response := utils.BuildResponse(4091, "user already exists", nil, nil)
 		return ctx.Status(http.StatusConflict).JSON(response)
 	}
 
-	// token := h.jwtService.GenerateToken(user.Id)
-	// user.Token = token
+	user, err := h.userService.CreateUser(registerRequest)
+	if err != nil {
+		response := utils.BuildResponse(5001, "database error", nil, nil)
+		return ctx.Status(http.StatusInternalServerError).JSON(response)
+	}
 
 	response := utils.BuildResponse(2001, "success", nil, user)
 	return ctx.Status(http.StatusOK).JSON(response)

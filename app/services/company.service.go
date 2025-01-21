@@ -17,6 +17,7 @@ type CompanyService interface {
 	UpdateCompany(UpdateCompanyRequest dto.UpdateCompanyBody) (*_company.CompanyResponse, error)
 	DeleteCompany(id primitive.ObjectID) (bool, error)
 	FindCompanyByID(companyId primitive.ObjectID) (*_company.CompanyResponse, error)
+	FindCompanyByEmail(companyEmail string) (*_company.CompanyResponse, error)
 }
 
 type companyService struct {
@@ -78,6 +79,20 @@ func (mt *companyService) UpdateCompany(companyRequest dto.UpdateCompanyBody) (*
 
 func (mt *companyService) FindCompanyByID(companyId primitive.ObjectID) (*_company.CompanyResponse, error) {
 	company, err := mt.companyRepo.FindByCompanyID(companyId)
+	if err != nil {
+		return nil, err
+	}
+
+	companyResponse := _company.CompanyResponse{}
+	err = smapping.FillStruct(&companyResponse, smapping.MapFields(&company))
+	if err != nil {
+		return nil, err
+	}
+	return &companyResponse, nil
+}
+
+func (mt *companyService) FindCompanyByEmail(companyEmail string) (*_company.CompanyResponse, error) {
+	company, err := mt.companyRepo.FindByCompanyEmail(companyEmail)
 	if err != nil {
 		return nil, err
 	}

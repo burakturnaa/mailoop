@@ -3,6 +3,7 @@ package utils
 import (
 	"fmt"
 	"reflect"
+	"strings"
 
 	"github.com/go-playground/validator/v10"
 )
@@ -26,11 +27,18 @@ func ValidationMessageHandler(e validator.FieldError) string {
 }
 
 func GetJSONTag(s interface{}, fieldName string) string {
-
 	typ := reflect.TypeOf(s)
 	if typ.Kind() == reflect.Ptr {
 		typ = typ.Elem()
 	}
+
+	// "[" find the index character at
+	index := strings.Index(fieldName, "[")
+	if index != -1 {
+		// "[" split the fieldName until the character at
+		fieldName = fieldName[:index]
+	}
+
 	// get the struct field by name
 	field, found := typ.FieldByName(fieldName)
 	if !found {

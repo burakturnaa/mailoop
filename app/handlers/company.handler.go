@@ -74,6 +74,7 @@ func (h *companyHandler) GetOne(ctx *fiber.Ctx) error {
 func (h *companyHandler) CreateCompany(ctx *fiber.Ctx) error {
 	// check the user id in the token
 	userId, _ := primitive.ObjectIDFromHex(ctx.Locals("userIdClaim").(string))
+
 	user, _ := h.userService.FindUserByID(userId)
 	if user == nil {
 		response := utils.BuildResponse(4041, "user not found", nil, nil)
@@ -87,6 +88,12 @@ func (h *companyHandler) CreateCompany(ctx *fiber.Ctx) error {
 		return ctx.Status(http.StatusBadRequest).JSON(response)
 	}
 
+	findCompany, _ := h.companyService.FindCompanyByEmail(companyRequest.Email)
+	if findCompany != nil {
+		response := utils.BuildResponse(4091, "company already exists", nil, nil)
+		return ctx.Status(http.StatusConflict).JSON(response)
+	}
+
 	company, err := h.companyService.CreateCompany(companyRequest)
 	var templateId *primitive.ObjectID = company.Id
 	company.Id = nil
@@ -95,7 +102,7 @@ func (h *companyHandler) CreateCompany(ctx *fiber.Ctx) error {
 		return ctx.Status(http.StatusInternalServerError).JSON(response)
 	}
 
-	log.Println("Mail template is created:", templateId.Hex(), "by", userId.Hex())
+	log.Println("Company is created:", templateId.Hex(), "by", userId.Hex())
 	response := utils.BuildResponse(2001, "success", nil, company)
 	return ctx.Status(http.StatusOK).JSON(response)
 }
