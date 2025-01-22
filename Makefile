@@ -5,14 +5,24 @@ all: build test
 
 build:
 	@echo "Building..."
-	@docker build -t mailoop-app .
+	
+	
+	@go build -o main.exe main.go
 
 # Run the application
 run:
+	@go run main.go
+
+docker-build:
+	@echo "Building..."
+	@docker build -t mailoop-app .
+
+# Run the application
+docker-run:
 	@docker run -it --rm -p 3000:3000 --env-file .env mailoop-app
 
 # Create and run Docker Compose services
-docker-run:
+docker-build:
 	@docker compose up --build
 
 # Shutdown Docker Compose services
