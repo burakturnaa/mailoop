@@ -1,20 +1,32 @@
+# Base image
 FROM golang:1.21 AS builder
 
+# Set the Current Working Directory inside the container
 WORKDIR /app
 
+# Copy the Go Modules manifests
 COPY go.mod go.sum ./
+
+# Download Go modules
 RUN go mod download
 
+# Copy the source code into the container
 COPY . .
-RUN go build -o main.exe main.go
 
-FROM alpine:latest
-RUN apk --no-cache add ca-certificates
+# Build the Go app
+RUN go build -o main main.go
 
-WORKDIR /app
-COPY --from=builder /app/main.exe .
-COPY --from=builder /app/.env . 
+# Start a new stage from a smaller image
+FROM debian:bullseye-slim
 
+# Set the working directory in the container
+WORKDIR /root/
+
+# Copy the compiled binary from the builder stage
+COPY --from=builder /app/main .
+
+# Expose the port
 EXPOSE 3000
 
-CMD ["./main.exe"]
+# Command to run the executable
+CMD ["./main"]
