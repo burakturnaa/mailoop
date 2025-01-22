@@ -5,11 +5,11 @@ all: build test
 
 build:
 	@echo "Building..."
-	@docker build -t my-fiber-app .
+	@docker build -t mailoop-app .
 
 # Run the application
 run:
-	@docker run -it --rm -p 3000:3000 --env-file .env my-fiber-app
+	@docker run -it --rm -p 3000:3000 --env-file .env mailoop-app
 
 # Create and run Docker Compose services
 docker-run:
