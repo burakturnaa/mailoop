@@ -14,9 +14,9 @@ run:
 	@go run main.go
 
 # Build and test the docker application
-docker-build:
-	@echo "Building..."
-	@docker build -t mailoop-app .
+# docker-build:
+# 	@echo "Building..."
+# 	@docker build -t mailoop-app .
 
 # Run the docker application
 docker-run:
@@ -24,6 +24,7 @@ docker-run:
 
 # Create and run Docker Compose services
 docker-build:
+	@echo "Building..."
 	@docker compose up --build -d
 
 # Shutdown Docker Compose services
