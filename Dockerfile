@@ -1,4 +1,4 @@
-FROM golang:1.20 AS builder
+FROM golang:1.21 AS builder
 
 WORKDIR /app
 
@@ -11,7 +11,7 @@ RUN go build -o main.exe main.go
 FROM alpine:latest
 RUN apk --no-cache add ca-certificates
 
-WORKDIR /root/
+WORKDIR /app
 COPY --from=builder /app/main.exe .
 COPY --from=builder /app/.env . 
 
