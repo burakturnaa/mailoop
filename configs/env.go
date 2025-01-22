@@ -7,6 +7,17 @@ import (
 	"github.com/joho/godotenv"
 )
 
+func EnvServerPort() string {
+	err := godotenv.Load()
+
+	if err != nil {
+		log.Fatalln("error .env")
+	}
+
+	mongoIRU := os.Getenv("SERVER_PORT")
+	return mongoIRU
+}
+
 func EnvMongoURI() string {
 	err := godotenv.Load()
 

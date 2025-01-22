@@ -1,22 +1,21 @@
 # Simple Makefile for a Go project
 
-# Build the application
+# Build and test the application
 all: build test
 
 build:
 	@echo "Building..."
-	
-	
-	@go build -o main.exe main.go
+	@docker build -t my-fiber-app .
 
 # Run the application
 run:
-	@go run main.go
-# Create DB container
+	@docker run -it --rm -p 3000:3000 --env-file .env my-fiber-app
+
+# Create and run Docker Compose services
 docker-run:
 	@docker compose up --build
 
-# Shutdown DB container
+# Shutdown Docker Compose services
 docker-down:
 	@docker compose down
 
@@ -24,17 +23,18 @@ docker-down:
 test:
 	@echo "Testing..."
 	@go test ./... -v
-# Integrations Tests for the application
+
+# Integration tests
 itest:
 	@echo "Running integration tests..."
 	@go test ./configs/setup -v
 
-# Clean the binary
+# Clean build artifacts
 clean:
 	@echo "Cleaning..."
-	@rm -f main
+	@rm -f main.exe
 
-# Live Reload
+# Watch for file changes and reload
 watch:
 	@powershell -ExecutionPolicy Bypass -Command "if (Get-Command air -ErrorAction SilentlyContinue) { \
 		air; \
