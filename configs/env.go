@@ -14,8 +14,8 @@ func EnvServerPort() string {
 		log.Fatalln("error .env")
 	}
 
-	mongoIRU := os.Getenv("SERVER_PORT")
-	return mongoIRU
+	serverPort := os.Getenv("SERVER_PORT")
+	return serverPort
 }
 
 func EnvMongoURI() string {
