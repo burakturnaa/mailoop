@@ -1,7 +1,7 @@
 services:
-  mongo-mailoop:
+  mongo:
     image: mongo:5.0
-    container_name: mongodb
+    container_name: mongodb-mailoop
     ports:
       - "27017:27017"
     volumes:
@@ -16,7 +16,7 @@ services:
     env_file:
       - .env
     depends_on:
-      - mongo-mailoop
+      - mongo
 
 volumes:
   mongo_data:
