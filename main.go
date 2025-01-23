@@ -61,13 +61,13 @@ func main() {
 	companyRoutes.Put("/:id", middlewares.AuthorizeJWT(jwtService), middlewares.CompanyValidation(&dto.UpdateCompanyBody{}), companyHandler.UpdateCompany)
 	companyRoutes.Delete("/:id", middlewares.AuthorizeJWT(jwtService), companyHandler.DeleteCompany)
 
-	// mail sender route
+	// mail sender routes
 	mailSenderRoutes := server.Group("/api/mail")
 	mailSenderRoutes.Post("/send", middlewares.AuthorizeJWT(jwtService), middlewares.MailSenderValidation(&dto.MailSenderBody{}), mailSenderHandler.CreateLog)
 
-	// log route
+	// log routes
 	LogRoutes := server.Group("/api/log")
 	LogRoutes.Get("/", middlewares.AuthorizeJWT(jwtService), logHandler.GetAll)
 
-	server.Listen(":" + configs.EnvServerPort())
+	server.ListenTLS(":"+configs.EnvServerPort(), nil, nil)
 }
