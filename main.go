@@ -69,5 +69,5 @@ func main() {
 	LogRoutes := server.Group("/api/log")
 	LogRoutes.Get("/", middlewares.AuthorizeJWT(jwtService), logHandler.GetAll)
 
-	server.ListenTLS(":"+configs.EnvServerPort(), nil, nil)
+	server.Listen(":" + configs.EnvServerPort())
 }
