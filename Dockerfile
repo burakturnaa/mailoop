@@ -11,22 +11,13 @@ COPY go.mod go.sum ./
 RUN go mod download
 
 # Copy the source code into the container
-COPY . .
+COPY ./ ./
 
 # Build the Go app
-RUN go build -o main main.go
-
-# Start a new stage from a smaller image
-FROM debian:bullseye-slim
-
-# Set the working directory in the container
-WORKDIR /root/
-
-# Copy the compiled binary from the builder stage
-COPY --from=builder /app/main .
+RUN CGO_ENABLED=0 GOOS=linux go build -o /mailoop-api-go
 
 # Expose the port
 EXPOSE 3000
 
 # Command to run the executable
-CMD ["./main"]
+CMD ["/mailoop-api-go"]
