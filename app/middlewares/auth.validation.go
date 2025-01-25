@@ -13,9 +13,11 @@ import (
 )
 
 // AuthValidation validates the request body against the provided struct
+
+// validator instance
+var validate = validator.New()
+
 func AuthValidation(dtoType interface{}) fiber.Handler {
-	// validator instance
-	var validate = validator.New()
 
 	return func(ctx *fiber.Ctx) error {
 

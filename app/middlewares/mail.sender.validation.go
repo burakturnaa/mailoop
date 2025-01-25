@@ -14,9 +14,6 @@ import (
 
 // MailSenderValidation validates the request body against the provided struct
 func MailSenderValidation(dtoType interface{}) fiber.Handler {
-	// validator instance
-	var validate = validator.New()
-
 	return func(ctx *fiber.Ctx) error {
 
 		// register custom validations

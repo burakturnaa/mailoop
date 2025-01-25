@@ -14,9 +14,6 @@ import (
 
 // MailTemplateValidation validates the request body against the provided struct
 func MailTemplateValidation(dtoType interface{}) fiber.Handler {
-	// validator instance
-	var validate = validator.New()
-
 	return func(ctx *fiber.Ctx) error {
 
 		// register custom validations
