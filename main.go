@@ -53,12 +53,12 @@ func main() {
 	companyHandler := handlers.NewCompanyHandler(companyService, userService, jwtService)
 	mailSenderHandler := handlers.NewMailSenderHandler(logService, mailTemplateService, companyService, userService, jwtService)
 	logHandler := handlers.NewLogHandler(logService, userService, jwtService)
-	userHandler := handlers.NewUserHandler(userService, jwtService)
 
 	// auth routes
 	authRoutes := server.Group("/api/auth")
 	authRoutes.Post("/login", middlewares.AuthValidation(&dto.LoginBody{}), authHandler.Login)
 	authRoutes.Post("/register", middlewares.AuthValidation(&dto.RegisterBody{}), authHandler.Register)
+	authRoutes.Get("/check_token", middlewares.AuthorizeJWT(jwtService), authHandler.CheckToken)
 
 	// mail template routes
 	mailTemplateRoutes := server.Group("/api/mailtemp")
@@ -83,10 +83,6 @@ func main() {
 	// log routes
 	LogRoutes := server.Group("/api/log")
 	LogRoutes.Get("/", middlewares.AuthorizeJWT(jwtService), logHandler.GetAll)
-
-	// user routes
-	UserRoutes := server.Group("/api/user")
-	UserRoutes.Get("/check_token", middlewares.AuthorizeJWT(jwtService), userHandler.CheckToken)
 
 	server.Listen(":" + configs.EnvServerPort())
 }

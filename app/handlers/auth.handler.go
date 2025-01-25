@@ -12,6 +12,7 @@ import (
 type AuthHandler interface {
 	Login(ctx *fiber.Ctx) error
 	Register(ctx *fiber.Ctx) error
+	CheckToken(ctx *fiber.Ctx) error
 }
 
 type authHandler struct {
@@ -77,5 +78,10 @@ func (h *authHandler) Register(ctx *fiber.Ctx) error {
 	}
 
 	response := utils.BuildResponse(2001, "success", nil, user)
+	return ctx.Status(http.StatusOK).JSON(response)
+}
+
+func (h *authHandler) CheckToken(ctx *fiber.Ctx) error {
+	response := utils.BuildResponse(2001, "success", nil, nil)
 	return ctx.Status(http.StatusOK).JSON(response)
 }
