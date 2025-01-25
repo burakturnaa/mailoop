@@ -12,6 +12,7 @@ Replace the **.env.example** file in the root directory with **.env** Then edit 
 Clone this repository
 ```bash
 ➜ git clone https://github.com/burakturnaa/mailoop.git
+➜ cd ./mailoop
 ```
 
 Install dependencies
