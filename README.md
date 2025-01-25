@@ -3,13 +3,15 @@
 A REST API service built to register users, companies, and email templates to the database via APIs and send the registered email templates as bulk emails to the registered companies.
 
 # Getting Started
-## Environment Config
+
+### Environment Config
+
 ##### Replace the .env.example file in the root directory with .env Then edit your environment variables
 
-## Clone the repository
+### Clone the repository
 ##### Clone this repository
 ```bash
-git clone https://github.com/burakturnaa/mailoop.git
+➜ git clone https://github.com/burakturnaa/mailoop.git
 ```
 
 ##### Install dependencies
