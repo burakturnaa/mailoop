@@ -13,6 +13,10 @@ POST /api/auth/login
 ```http
 POST /api/auth/register
 ```
+##### Check token
+```http
+POST /api/auth/check_token
+```
 
 ### CRUD Company
 ##### Get all companies
