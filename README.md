@@ -62,7 +62,7 @@ POST /api/auth/register
 ```
 Check token
 ```http
-POST /api/auth/check_token
+GET /api/auth/check_token
 ```
 
 ### CRUD Company
