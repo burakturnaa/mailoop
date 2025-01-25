@@ -1,6 +1,8 @@
 package main
 
 import (
+	"strconv"
+
 	"github.com/burakturnaa/mailoop.git/app/dto"
 	"github.com/burakturnaa/mailoop.git/app/handlers"
 	"github.com/burakturnaa/mailoop.git/app/middlewares"
@@ -8,10 +10,22 @@ import (
 	"github.com/burakturnaa/mailoop.git/app/services"
 	"github.com/burakturnaa/mailoop.git/configs"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 )
 
 func main() {
 	server := fiber.New()
+
+	// CORS
+	envCors := configs.EnvCORS()
+	allowCredentials, _ := strconv.ParseBool(envCors["allowCredentials"])
+	server.Use(cors.New(cors.Config{
+		AllowOrigins:     envCors["allowOrigings"],
+		AllowMethods:     envCors["allowMethods"],
+		AllowHeaders:     envCors["allowHeaders"],
+		ExposeHeaders:    envCors["exposeHeaders"],
+		AllowCredentials: allowCredentials,
+	}))
 
 	// collections
 	dbClientUsers := configs.GetCollection(configs.DB, "users")

@@ -45,3 +45,20 @@ func EnvSMTP() map[string]string {
 	}
 	return smtp
 }
+
+func EnvCORS() map[string]string {
+	err := godotenv.Load()
+
+	if err != nil {
+		log.Fatalln("error .env")
+	}
+
+	var cors = map[string]string{
+		"allowOrigings":    os.Getenv("ALLOW_ORIGINS"),
+		"allowMethods":     os.Getenv("ALLOW_METHODS"),
+		"allowHeaders":     os.Getenv("ALLOW_HEADERS"),
+		"exposeHeaders":    os.Getenv("EXPOSE_HEADERS"),
+		"allowCredentials": os.Getenv("ALLOW_CREDENTIALS"),
+	}
+	return cors
+}
