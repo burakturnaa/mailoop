@@ -47,7 +47,7 @@ A REST API service built to register users, companies, and email templates to th
 
 If you had installed make utility
 
-## API Reference
+# API References
 
 ### Authentication
 ##### Login
