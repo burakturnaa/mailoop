@@ -6,7 +6,7 @@ A REST API service built to register users, companies, and email templates to th
 
 ### Environment Config
 
-##### Replace the .env.example file in the root directory with .env Then edit your environment variables
+Replace the **.env.example** file in the root directory with **.env** Then edit your environment variables
 
 ### Clone the repository
 ##### Clone this repository
