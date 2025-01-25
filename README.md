@@ -59,7 +59,7 @@ DELETE /api/mailtemp/:id
 ```
 
 ### Mail Sender
-##### Send mail
+##### Send email
 ```http
 POST /api/mail/send
 ```
