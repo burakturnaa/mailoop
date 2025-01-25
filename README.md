@@ -9,112 +9,113 @@ A REST API service built to register users, companies, and email templates to th
 Replace the **.env.example** file in the root directory with **.env** Then edit your environment variables
 
 ### Clone the repository
-##### Clone this repository
+Clone this repository
 ```bash
 ➜ git clone https://github.com/burakturnaa/mailoop.git
 ```
 
-##### Install dependencies
+Install dependencies
 ```bash
 ➜ go mod download
 ```
 
-##### Run
+Run
 ```bash
 ➜ go run main.go
 ```
 
-##### Build
+Build
 ```bash
 ➜ go build
 ```
 
 ### Working with makefile
-##### Run
+*If you had installed make utility*
+
+Run
 ```bash
 ➜ make run
 ```
 
-##### Build
+Build
 ```bash
 ➜ make build
 ```
 
-##### Watch for file changes and reload
+Watch for file changes and reload
 ```bash
 ➜ make watch
 ```
 
-If you had installed make utility
 
 # API References
 
 ### Authentication
-##### Login
+Login
 ```http
 POST /api/auth/login
 ```
-##### Register
+Register
 ```http
 POST /api/auth/register
 ```
-##### Check token
+Check token
 ```http
 POST /api/auth/check_token
 ```
 
 ### CRUD Company
-##### Get all companies
+Get all companies
 ```http
 GET /api/company/
 ```
-##### Get company by id
+Get company by id
 ```http
 GET /api/company/:id
 ```
-##### Create company
+Create company
 ```http
 POST /api/company/
 ```
-##### Update company
+Update company
 ```http
 PUT /api/company/:id
 ```
-##### Delete company
+Delete company
 ```http
 DELETE /api/company/:id
 ```
 
 ### CRUD Mail Template
-##### Get all mail templates
+Get all mail templates
 ```http
 GET /api/mailtemp/
 ```
-##### Get mail template by id
+Get mail template by id
 ```http
 GET /api/mailtemp/:id
 ```
-##### Create mail template
+Create mail template
 ```http
 POST /api/mailtemp/
 ```
-##### Update mail template
+Update mail template
 ```http
 PUT /api/mailtemp/:id
 ```
-##### Delete mail template
+Delete mail template
 ```http
 DELETE /api/mailtemp/:id
 ```
 
 ### Mail Sender
-##### Send email
+Send email
 ```http
 POST /api/mail/send
 ```
 
 ### LOGS
-##### Get all logs
+Get all logs
 ```http
 GET /api/log/
 ```
