@@ -28,7 +28,7 @@ func NewCompanyResponse(company models.Company) CompanyResponse {
 func NewCompanyArrayResponse(companies []models.Company) []CompanyResponse {
 	companyRes := []CompanyResponse{}
 	for _, v := range companies {
-		Id = v.Id
+		Id := v.Id
 		p := CompanyResponse{
 			Id:       &Id,
 			Name:     v.Name,
@@ -38,6 +38,7 @@ func NewCompanyArrayResponse(companies []models.Company) []CompanyResponse {
 			Website:  v.Website,
 		}
 		companyRes = append(companyRes, p)
+
 	}
 	return companyRes
 }

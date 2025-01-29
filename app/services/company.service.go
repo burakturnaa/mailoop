@@ -29,22 +29,22 @@ func NewCompanyService(companyRepo repository.CompanyRepository) CompanyService 
 }
 
 func (mt *companyService) GetAll() (*[]_company.CompanyResponse, error) {
-	companyies, err := mt.companyRepo.GetAll()
+	companies, err := mt.companyRepo.GetAll()
 	if err != nil {
 		return nil, err
 	}
 
-	response := _company.NewCompanyArrayResponse(companyies)
+	response := _company.NewCompanyArrayResponse(companies)
 	return &response, nil
 }
 
 func (mt *companyService) GetOne(id primitive.ObjectID) (*_company.CompanyResponse, error) {
-	companyies, err := mt.companyRepo.GetOne(id)
+	companies, err := mt.companyRepo.GetOne(id)
 	if err != nil {
 		return nil, err
 	}
 
-	response := _company.NewCompanyResponse(companyies)
+	response := _company.NewCompanyResponse(companies)
 	return &response, nil
 }
 
