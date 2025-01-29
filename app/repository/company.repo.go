@@ -33,28 +33,28 @@ func NewCompanyRepository(dbClient *mongo.Collection) CompanyRepository {
 func (mt *companyRepository) GetAll() ([]models.Company, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	var companys []models.Company
+	var companyies []models.Company
 	cursor, err := mt.CompanyCollection.Find(ctx, bson.M{})
 	if err != nil {
 		return nil, err
 	}
 
-	if err := cursor.All(ctx, &companys); err != nil {
+	if err := cursor.All(ctx, &companyies); err != nil {
 		return nil, err
 	}
-	return companys, nil
+	return companyies, nil
 }
 
 func (mt *companyRepository) GetOne(id primitive.ObjectID) (models.Company, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	var companys models.Company
-	err := mt.CompanyCollection.FindOne(ctx, bson.M{"id": id}).Decode(&companys)
+	var companyies models.Company
+	err := mt.CompanyCollection.FindOne(ctx, bson.M{"id": id}).Decode(&companyies)
 	fmt.Println(err)
 	if err != nil {
-		return companys, err
+		return companyies, err
 	}
-	return companys, nil
+	return companyies, nil
 }
 
 func (mt *companyRepository) InsertCompany(company models.Company) (models.Company, error) {

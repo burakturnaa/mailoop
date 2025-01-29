@@ -28,8 +28,9 @@ func NewCompanyResponse(company models.Company) CompanyResponse {
 func NewCompanyArrayResponse(companies []models.Company) []CompanyResponse {
 	companyRes := []CompanyResponse{}
 	for _, v := range companies {
+		Id = v.Id
 		p := CompanyResponse{
-			Id:       &v.Id,
+			Id:       &Id,
 			Name:     v.Name,
 			Email:    v.Email,
 			Phone:    v.Phone,

@@ -26,8 +26,9 @@ func NewLogResponse(log models.Log) LogResponse {
 func NewLogArrayResponse(logs []models.Log) []LogResponse {
 	logRes := []LogResponse{}
 	for _, v := range logs {
+		Id := v.Id
 		p := LogResponse{
-			Id:             &v.Id,
+			Id:             &Id,
 			MailTemplateId: v.MailTemplateId,
 			EmailList:      v.EmailList,
 			CreatedAt:      v.CreatedAt,

@@ -25,8 +25,9 @@ func NewMailTemplateResponse(mailTemplate models.MailTemplate) MailTemplateRespo
 func NewMailTemplateArrayResponse(mailTemplates []models.MailTemplate) []MailTemplateResponse {
 	mailTemplateRes := []MailTemplateResponse{}
 	for _, v := range mailTemplates {
+		Id := v.Id
 		p := MailTemplateResponse{
-			Id:      &v.Id,
+			Id:      &Id,
 			Title:   v.Title,
 			Subject: v.Subject,
 			Content: v.Content,

@@ -40,14 +40,14 @@ func NewCompanyHandler(
 }
 
 func (h *companyHandler) GetAll(ctx *fiber.Ctx) error {
-	companys, err := h.companyService.GetAll()
+	companies, err := h.companyService.GetAll()
 	if err != nil {
 		if err.Error() != mongo.ErrNoDocuments.Error() {
 			response := utils.BuildResponse(5001, "database error", nil, nil)
 			return ctx.Status(http.StatusInternalServerError).JSON(response)
 		}
 	}
-	response := utils.BuildResponse(2001, "success", nil, companys)
+	response := utils.BuildResponse(2001, "success", nil, companies)
 	return ctx.Status(http.StatusOK).JSON(response)
 }
 
@@ -57,7 +57,7 @@ func (h *companyHandler) GetOne(ctx *fiber.Ctx) error {
 		response := utils.BuildResponse(4002, "Validation error", fiber.Map{"id": "id must be a valid primitive object id"}, nil)
 		return ctx.Status(http.StatusBadRequest).JSON(response)
 	}
-	companys, err := h.companyService.GetOne(id)
+	companyies, err := h.companyService.GetOne(id)
 	if err != nil {
 		if err.Error() != mongo.ErrNoDocuments.Error() {
 			response := utils.BuildResponse(5001, "database error", nil, nil)
@@ -67,7 +67,7 @@ func (h *companyHandler) GetOne(ctx *fiber.Ctx) error {
 			return ctx.Status(http.StatusNotFound).JSON(response)
 		}
 	}
-	response := utils.BuildResponse(2001, "success", nil, companys)
+	response := utils.BuildResponse(2001, "success", nil, companyies)
 	return ctx.Status(http.StatusOK).JSON(response)
 }
 
